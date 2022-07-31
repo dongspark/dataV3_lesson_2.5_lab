@@ -9,24 +9,28 @@ SELECT COUNT(film_id) as film_number FROM sakila.inventory;
 SELECT MAX(length) AS max_duration, MIN(length) AS min_duration FROM sakila.film;
 
 -- 4.What's the average movie duration expressed in format (hours, minutes)?
-SELECT * FROM sakila.film;
-SELECT hour(length) FROM sakila.film;
 SELECT CONCAT(FLOOR(avg(length)/60),'h ',round(MOD(avg(length),60)),'m') as mean_duration FROM sakila.film;
 
 
 -- 5.How many distinct (different) actors' last names are there?
-SELECT count(distinct last_name) FROM sakila.actor;
+SELECT count(distinct last_name) AS lastname_num FROM sakila.actor;
 
 -- 6.Since how many days has the company been operating (check DATEDIFF() function)?
-SELECT * FROM sakila.payment;
-SELECT DATEDIFF('2005-08-23' ,'2005-05-25');
+SELECT DATEDIFF('2005-08-23' ,'2005-05-25') days_num;
 
 -- 7.Show rental info with additional columns month and weekday. Get 20 results.
-SELECT * FROM sakila.rental;
-SELECT *,date_format(rental_date,'%M') AS month,date_format(rental_date,'%W') AS weekday FROM sakila.rental;
+SELECT *,date_format(rental_date,'%M') AS month,date_format(rental_date,'%W') AS weekday 
+FROM sakila.rental
+LIMIT 20;
 
 -- 8.Add an additional column day_type with values 'weekend' and 'workday' depending on the rental day of the week.
-SELECT *,weekday(rental_date) as day_type FROM sakila.rental;
+SELECT rental_date, EXTRACT(MONTH FROM rental_date) as month,
+WEEKDAY(rental_date) as day,
+CASE
+WHEN WEEKDAY(rental_date) = 0 OR WEEKDAY(rental_date) = 6 THEN 'weekend'
+ELSE 'workday'
+END AS day_type
+FROM sakila.rental;
 
 -- 9.Get release years.
 SELECT release_year FROM sakila.film;
